@@ -11,9 +11,31 @@ the board potions looks like this: 1,1 │1,2│ 1,3
 import java.util.Scanner;
 public class Main {
     static char[][] board={{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
+    static Scanner scan= new Scanner(System.in);
     public static void main(String[] args) {
-        //twoPlayersGame();
-        playAgainstAi();
+        int theGame;
+        int asist=0;
+        String yesOrNo;
+
+        System.out.println("Hello, welcome to my tic-tac-toe");
+        do {
+            System.out.println("do u want game for 2 player or 1 player");
+            do {
+                System.out.println("Pls answer with 1 or 2");
+                theGame = scan.nextInt();
+            } while (!(theGame == 1 || theGame == 2));
+            if (theGame == 2) {
+                twoPlayersGame();}
+            else
+                playAgainstAi();
+            System.out.println("do u want another game?");
+                do {
+                    if (asist>0)
+                        System.out.println("Pls answer with yes or no");
+                    asist++;
+                    yesOrNo = scan.nextLine();
+                } while (!(yesOrNo.equals("yes") || yesOrNo.equals("no") || yesOrNo.equals("Yes") || yesOrNo.equals("No")));
+        }while (yesOrNo.equals("yes") || yesOrNo.equals("Yes"));
     }
     public static void twoPlayersGame(){
         int whosWinner = 4;
@@ -69,7 +91,6 @@ public class Main {
         int[] aiMove2;
         char pcPick;
         char playerPick;
-        Scanner scan= new Scanner(System.in);
         System.out.println("O is starting,X second, what do u want to play?");
         do {
             System.out.println("pls pick X or O");
