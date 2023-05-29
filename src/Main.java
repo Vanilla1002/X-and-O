@@ -34,6 +34,7 @@ public class Main {
                         System.out.println("Pls answer with yes or no");
                     asist++;
                     yesOrNo = scan.nextLine();
+                    board= new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
                 } while (!(yesOrNo.equals("yes") || yesOrNo.equals("no") || yesOrNo.equals("Yes") || yesOrNo.equals("No")));
         }while (yesOrNo.equals("yes") || yesOrNo.equals("Yes"));
     }
@@ -158,9 +159,7 @@ public class Main {
                 printSet(board);
                 countTurn++;
                 System.out.println("player 1 turn:");
-
             }
-
             whosWinner=fasterWinner(y1-1,x1-1,board);
         }
         winnersName(whosWinner);
@@ -238,7 +237,6 @@ public class Main {
                     arrayBoard[i][j]=' ';
                     if (i1 ==numberOfWinner)
                         return new int[]{i,j};
-
                 }
             }
         }
