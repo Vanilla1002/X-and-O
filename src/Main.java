@@ -80,7 +80,7 @@ public class Main {
             whosWinner=fasterWinner(y-1,x-1,board);
         }
         winnersName(whosWinner);
-    }//full game progress for 2 players
+    }//full game progress for 2 players 
     public static void playAgainstAi(){
         int whosWinner = 4;
         int x;
@@ -101,7 +101,7 @@ public class Main {
                 pcPick = 'O';
             }else
                 pcPick='X';
-        }while (!(playerPick=='O'||playerPick=='X'));
+        }while (!(playerPick=='O'||playerPick=='X'||playerPick=='0'));
 
         printSet(board);
         while (whosWinner==4) {
@@ -277,4 +277,5 @@ public class Main {
             x++;
         }
     }//helps print the board
+    
 }
