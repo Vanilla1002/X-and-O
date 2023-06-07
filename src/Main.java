@@ -6,13 +6,17 @@ the board potions looks like this: 1,1 │1,2│ 1,3
                                    2,1 │2,2│ 2,3    basic, checking all the board if there is 3 same symbols in same row
                                    ————╀———╀————    the second is faster,checking each move if the symbols effects the
                                    3,1 │3,2│ 3,3    statement, which means checks only if the new char makes a winner.
+*update: I added MinMax AI method to the code
 */
-
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 public class Main {
     static char[][] board={{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
     static Scanner scan= new Scanner(System.in);
     public static void main(String[] args) {
+        playAgainstMinMaxAI();
         int theGame;
         int asist=0;
         String yesOrNo;
@@ -27,7 +31,7 @@ public class Main {
             if (theGame == 2) {
                 twoPlayersGame();}
             else
-                playAgainstAi();
+                playAgainstAI();
             System.out.println("do u want another game?");
                 do {
                     if (asist>0)
@@ -81,7 +85,7 @@ public class Main {
         }
         winnersName(whosWinner);
     }//full game progress for 2 players 
-    public static void playAgainstAi(){
+    public static void playAgainstAI(){
         int whosWinner = 4;
         int x;
         int y;
@@ -164,6 +168,66 @@ public class Main {
         }
         winnersName(whosWinner);
     }//full game progress for playing against pc
+    public static void playAgainstMinMaxAI(){
+        int whosWinner = 4;
+        int x=0;
+        int y=0;
+        int countTurn = 0;
+        int[] aiMove;
+        char pcPick;
+        char playerPick;
+        System.out.println("O is starting,X second, what do u want to play?");
+        do {
+            System.out.println("pls pick X or O");
+            playerPick = scan.next().charAt(0);
+            if (playerPick == 'X') {
+                countTurn = 1;
+                pcPick = 'O';
+            }else
+                pcPick='X';
+        }while (!(playerPick=='O'||playerPick=='X'||playerPick=='0'));
+
+        printSet(board);
+        while (whosWinner==4) {
+            if (countTurn % 2 == 0) {
+                do {
+                    do {
+                        System.out.println("enter the number of the row");
+                        y = scan.nextInt();
+                        if (y > 3 || y <= 0)
+                            System.out.println("pls enter a number between 1-3");
+                    } while (!(y <= 3 && y > 0));
+                    do {
+                        System.out.println("enter the number of the column");
+                        x = scan.nextInt();
+                        if (x > 3 || x <= 0)
+                            System.out.println("pls enter a number between 1-3");
+                    } while (!(x <= 3 && x > 0));
+                    if (board[y - 1][x - 1] != ' ')
+                        System.out.println("this place already taken, pick other place pls");
+                } while (!(board[y - 1][x - 1] == ' '));
+                board[y - 1][x - 1] = playerPick;
+                printSet(board);
+                countTurn++;
+                System.out.println(pcPick+" turn:");
+
+            } else {
+                if (pcPick=='X')
+                    aiMove=minMaxMethod('X',board,0,0);
+                else
+                    aiMove=minMaxMethod('O',board,0,0);
+                y=aiMove[0]+1;
+                x=aiMove[1]+1;
+                board[y-1][x-1] = pcPick;
+                printSet(board);
+                countTurn++;
+                System.out.println(playerPick +" turn:");
+
+            }
+            whosWinner=fasterWinner(y-1 ,x-1,board);
+        }
+        winnersName(whosWinner);
+    }
     public static int isWinner(){
         for (int i=0;i<3;i++){
             if (((board[i][0]==board[i][1])&&(board[i][1]==board[i][2]))&&(board[i][0]!=' ')) {
@@ -242,7 +306,33 @@ public class Main {
         }
         return new int[]{-1};
     }//an AI method
-
+    public static int[] minMaxMethod(char currentTurn, char[][]boardB, int yLast,int xLast) {
+        int gameState = fasterWinner(yLast, xLast, boardB);
+        if (gameState == 1)
+            return new int[]{10, yLast, xLast};
+        if (gameState == 2)
+            return new int[]{-10, yLast, xLast};
+        if (gameState==3)
+            return new int[]{0, yLast, xLast};
+        HashMap<int[],Integer> resultMap = new HashMap<>();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (boardB[i][j]==' '){
+                    boardB[i][j]=currentTurn;
+                    char nextTurn = (currentTurn=='O')?'X':'O';
+                    int[] theResult = minMaxMethod(nextTurn,boardB,i,j);
+                    resultMap.put(new int[]{i, j},theResult[0]);
+                    boardB[i][j]=' ';
+                }
+            }
+        }
+        int[] arrMax = Collections.max(resultMap.entrySet(), Map.Entry.comparingByValue()).getKey();
+        int[] arrMin = Collections.min(resultMap.entrySet(), Map.Entry.comparingByValue()).getKey();
+        if (currentTurn=='O')
+            return arrMax;
+        else
+            return arrMin;
+    }
     public static void winnersName(int x){
         switch (x) {
             case 1 -> System.out.println("O wins");
