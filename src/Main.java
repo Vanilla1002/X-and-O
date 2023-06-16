@@ -16,7 +16,6 @@ public class Main {
     static char[][] board={{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
     static Scanner scan= new Scanner(System.in);
     public static void main(String[] args) {
-        playAgainstMinMaxAI();
         int theGame;
         int asist=0;
         String yesOrNo;
@@ -27,18 +26,18 @@ public class Main {
             do {
                 System.out.println("Pls answer with 1 or 2");
                 theGame = scan.nextInt();
+                board= new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
             } while (!(theGame == 1 || theGame == 2));
             if (theGame == 2) {
                 twoPlayersGame();}
             else
-                playAgainstAI();
+                playAgainstMinMaxAI();
             System.out.println("do u want another game?");
                 do {
                     if (asist>0)
                         System.out.println("Pls answer with yes or no");
                     asist++;
                     yesOrNo = scan.nextLine();
-                    board= new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
                 } while (!(yesOrNo.equals("yes") || yesOrNo.equals("no") || yesOrNo.equals("Yes") || yesOrNo.equals("No")));
         }while (yesOrNo.equals("yes") || yesOrNo.equals("Yes"));
     }
@@ -122,7 +121,7 @@ public class Main {
                         x = scan.nextInt();
                         if (x > 3 || x <= 0)
                             System.out.println("pls enter a number between 1-3");
-                    } while (!(x <= 3 && x > 0));
+                    } while (!(x <= 3 && x > 0));   
                     if (board[y - 1][x - 1] != ' ')
                         System.out.println("this place already taken, pick other place pls");
                 }while (!(board[y - 1][x - 1]==' '));
@@ -216,8 +215,9 @@ public class Main {
                     aiMove=minMaxMethod('X',board,0,0);
                 else
                     aiMove=minMaxMethod('O',board,0,0);
-                y=aiMove[0]+1;
-                x=aiMove[1]+1;
+                System.out.println(aiMove[0]);
+                y=aiMove[1]+1;
+                x=aiMove[2]+1;
                 board[y-1][x-1] = pcPick;
                 printSet(board);
                 countTurn++;
@@ -306,7 +306,7 @@ public class Main {
         }
         return new int[]{-1};
     }//an AI method
-    public static int[] minMaxMethod(char currentTurn, char[][]boardB, int yLast,int xLast) {
+    public static int[] minMaxMethod(char currentTurn, char[][]boardB, int yLast, int xLast) {
         int gameState = fasterWinner(yLast, xLast, boardB);
         if (gameState == 1)
             return new int[]{10, yLast, xLast};
@@ -314,20 +314,25 @@ public class Main {
             return new int[]{-10, yLast, xLast};
         if (gameState==3)
             return new int[]{0, yLast, xLast};
-        HashMap<int[],Integer> resultMap = new HashMap<>();
+        HashMap<Integer,int[]> resultMap = new HashMap<>();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (boardB[i][j]==' '){
                     boardB[i][j]=currentTurn;
                     char nextTurn = (currentTurn=='O')?'X':'O';
-                    int[] theResult = minMaxMethod(nextTurn,boardB,i,j);
-                    resultMap.put(new int[]{i, j},theResult[0]);
+                    int[] theResult = minMaxMethod(nextTurn, boardB, i , j);
+                    resultMap.put(theResult[0],new int[]{i,j});
                     boardB[i][j]=' ';
                 }
             }
         }
-        int[] arrMax = Collections.max(resultMap.entrySet(), Map.Entry.comparingByValue()).getKey();
-        int[] arrMin = Collections.min(resultMap.entrySet(), Map.Entry.comparingByValue()).getKey();
+
+        int highestKey= Collections.max(resultMap.keySet());
+        int[] highestKeyValue= resultMap.get(highestKey);
+        int[] arrMax= new int[]{highestKey,highestKeyValue[0],highestKeyValue[1]};
+        int lowestKey= Collections.min(resultMap.keySet());
+        int[] lowestKeyValue= resultMap.get(lowestKey);
+        int[] arrMin= new int[]{lowestKey,lowestKeyValue[0],lowestKeyValue[1]};
         if (currentTurn=='O')
             return arrMax;
         else
