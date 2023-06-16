@@ -22,11 +22,11 @@ public class Main {
 
         System.out.println("Hello, welcome to my tic-tac-toe");
         do {
+            board= new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
             System.out.println("do u want game for 2 player or 1 player");
             do {
                 System.out.println("Pls answer with 1 or 2");
                 theGame = scan.nextInt();
-                board= new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
             } while (!(theGame == 1 || theGame == 2));
             if (theGame == 2) {
                 twoPlayersGame();}
