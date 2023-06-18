@@ -6,20 +6,20 @@ the board potions looks like this: 1,1 │1,2│ 1,3
                                    2,1 │2,2│ 2,3    basic, checking all the board if there is 3 same symbols in same row
                                    ————╀———╀————    the second is faster,checking each move if the symbols effects the
                                    3,1 │3,2│ 3,3    statement, which means checks only if the new char makes a winner.
-*update: I added MinMax AI method to the code
+
+*Update: I added another and smarter AI method working on MinMax recursion function, now there 2 levels of pc to play against
 */
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 public class Main {
     static char[][] board={{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
     static Scanner scan= new Scanner(System.in);
     public static void main(String[] args) {
         int theGame;
-        int asist=0;
+        int assist=0;
+        int level;
         String yesOrNo;
-
         System.out.println("Hello, welcome to my tic-tac-toe");
         do {
             board= new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
@@ -31,15 +31,23 @@ public class Main {
             if (theGame == 2) {
                 twoPlayersGame();}
             else
-                playAgainstMinMaxAI();
+                System.out.println("pick the AI level, choose 1 or 2");
+                do {
+                    level = scan.nextInt();
+                    if (level==1)
+                        playAgainstAI();
+                    else
+                        playAgainstMinMaxAI();
+                }while (!(level == 1 || level == 2));
             System.out.println("do u want another game?");
                 do {
-                    if (asist>0)
-                        System.out.println("Pls answer with yes or no");
-                    asist++;
+                    if (assist>0)
+                        System.out.println("pls answer with yes or no");
+                    assist++;
                     yesOrNo = scan.nextLine();
                 } while (!(yesOrNo.equals("yes") || yesOrNo.equals("no") || yesOrNo.equals("Yes") || yesOrNo.equals("No")));
         }while (yesOrNo.equals("yes") || yesOrNo.equals("Yes"));
+        System.out.println("Ty for playing my Tic-Tac-Toe");
     }
     public static void twoPlayersGame(){
         int whosWinner = 4;
@@ -93,19 +101,9 @@ public class Main {
         int countTurn = 0;
         int[] aiMove1;
         int[] aiMove2;
-        char pcPick;
-        char playerPick;
-        System.out.println("O is starting,X second, what do u want to play?");
-        do {
-            System.out.println("pls pick X or O");
-            playerPick = scan.next().charAt(0);
-            if (playerPick == 'X') {
-                countTurn = 1;
-                pcPick = 'O';
-            }else
-                pcPick='X';
-        }while (!(playerPick=='O'||playerPick=='X'||playerPick=='0'));
-
+        char playerPick=whatYouPick();
+        char pcPick=pcPick(playerPick);
+        if (playerPick=='X')countTurn=1;
         printSet(board);
         while (whosWinner==4) {
             if (countTurn % 2==0){
@@ -173,19 +171,9 @@ public class Main {
         int y=0;
         int countTurn = 0;
         int[] aiMove;
-        char pcPick;
-        char playerPick;
-        System.out.println("O is starting,X second, what do u want to play?");
-        do {
-            System.out.println("pls pick X or O");
-            playerPick = scan.next().charAt(0);
-            if (playerPick == 'X') {
-                countTurn = 1;
-                pcPick = 'O';
-            }else
-                pcPick='X';
-        }while (!(playerPick=='O'||playerPick=='X'||playerPick=='0'));
-
+        char playerPick=whatYouPick();
+        char pcPick=pcPick(playerPick);
+        if (playerPick=='X')countTurn=1;
         printSet(board);
         while (whosWinner==4) {
             if (countTurn % 2 == 0) {
@@ -215,7 +203,6 @@ public class Main {
                     aiMove=minMaxMethod('X',board,0,0);
                 else
                     aiMove=minMaxMethod('O',board,0,0);
-                System.out.println(aiMove[0]);
                 y=aiMove[1]+1;
                 x=aiMove[2]+1;
                 board[y-1][x-1] = pcPick;
@@ -372,5 +359,22 @@ public class Main {
             x++;
         }
     }//helps print the board
-    
+
+    public static char whatYouPick(){
+        char playerPick;
+        System.out.println("O is starting,X second, what do u want to play?");
+        do {
+            System.out.println("pls pick X or O");
+            playerPick = scan.next().charAt(0);
+        }while (!(playerPick=='O'||playerPick=='X'));
+        return playerPick;
+    }
+    public static char pcPick(char playerPick){
+        if (playerPick=='X') {
+            return 'O';
+        }
+        else {
+            return 'X';
+        }
+    }
 }
