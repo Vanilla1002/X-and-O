@@ -44,9 +44,9 @@ public class Main {
                     if (assist>0)
                         System.out.println("pls answer with yes or no");
                     assist++;
-                    yesOrNo = scan.nextLine();
-                } while (!(yesOrNo.equals("yes") || yesOrNo.equals("no") || yesOrNo.equals("Yes") || yesOrNo.equals("No")));
-        }while (yesOrNo.equals("yes") || yesOrNo.equals("Yes"));
+                    yesOrNo = scan.nextLine().toLowerCase();
+                } while (!(yesOrNo.equals("yes") || yesOrNo.equals("no") ));
+        }while (yesOrNo.equals("yes"));
         System.out.println("Ty for playing my Tic-Tac-Toe");
     }
     public static void twoPlayersGame(){
@@ -365,7 +365,7 @@ public class Main {
         System.out.println("O is starting,X second, what do u want to play?");
         do {
             System.out.println("pls pick X or O");
-            playerPick = scan.next().charAt(0);
+            playerPick = Character.toUpperCase(scan.nextLine().charAt(0));
         }while (!(playerPick=='O'||playerPick=='X'));
         return playerPick;
     }
